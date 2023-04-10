@@ -1,0 +1,104 @@
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <time.h> 
+#include <math.h>
+
+#define LENGTH 100
+#define TEMP 2.0
+
+int main()  
+{  
+    int d = LENGTH;
+    int spin[d][d],right[d],left[d];  
+    int i,j,en, total_spin;
+    time_t t1;   
+    srand ( (unsigned) time (&t1)); 
+
+    //creating initial spin state
+    for (i = 0; i <d; i++)
+    {  
+        for (j = 0; j <d; j++)
+        {  
+            spin[i][j]= rand() % 2;  
+            if(spin[i][j]==0) { spin[i][j] = -1; }
+        }
+    } 
+
+    //Defining left and right	  
+    for (i = 0; i <d; i++)
+    {
+        right[i] = i + 1;
+        left[i] = i - 1;
+    }
+    right[d-1] = 0;
+    left[0] = d-1;
+
+    //Calculate total energy and spin
+    en = 0;
+    total_spin = 0;
+    for (i = 0; i <d; i++)
+    {  
+        for (j = 0; j <d; j++)
+        {  
+            en = en - spin[i][j]*(spin[left[i]][j]+spin[right[i]][j]+spin[i][left[j]]+spin[i][right[j]]);
+            total_spin += spin[i][j];
+        }
+    }
+    en = en/2;
+    printf("Total energy: %d\n", en);
+    printf("Total spin: %d\n", total_spin);
+
+    // Perform Monte Carlo steps
+    int ix, iy;
+    int ixpick, iypick;
+    int ss0, ss1, ss2, ss3, ss4, de;
+    int flag;
+    long int idum;
+    double prob1 , prob2;
+    prob1 = exp(-8.0/TEMP);
+    prob2 = exp(-4.0/TEMP);
+
+    // Perform 1000 iterations
+    for (int iter = 0; iter < 1000; iter++) {
+        for (i = 1 ; i <= LENGTH*LENGTH ; i++)
+        {
+            ixpick = LENGTH * rand() / (RAND_MAX + 1);	  
+            iypick = LENGTH * rand() / (RAND_MAX + 1);	  
+
+            ss0 = spin [ixpick][iypick];     
+            ss1 = spin [left[ixpick]][iypick];
+            ss2 = spin [ixpick][left[iypick]];
+            ss3 = spin [right[ixpick]][iypick];
+            ss4 = spin [ixpick][right[iypick]];
+
+            de =  2*ss0*(ss1+ss2+ss3+ss4);
+
+            flag = 1; // flip spin if flag = 1 
+
+            if ((de == 8) && (rand()/(double)RAND_MAX > prob1) ||    
+                (de == 4) && (rand()/(double)RAND_MAX > prob2))     
+            {
+                flag = 0;
+            }
+        
+            spin[ixpick][iypick] = flag*(-1) + (1-flag)*ss0; // Flip spin if flag = 1, otherwise keep it the same.
+
+        }   
+    }
+
+    // Calculate total energy and spin after Monte Carlo steps
+    en = 0;
+    total_spin = 0; // Reset total_spin
+for (i = 0; i <d; i++)
+{
+for (j = 0; j <d; j++)
+{
+en = en - spin[i][j]*(spin[left[i]][j]+spin[right[i]][j]+spin[i][left[j]]+spin[i][right[j]]);
+total_spin += spin[i][j];
+}
+}
+en = en/2;
+printf("Total energy after Monte Carlo steps: %d\n", en);
+printf("Total spin after Monte Carlo steps: %d\n", total_spin);
+return 0;  
+}
