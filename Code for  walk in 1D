@@ -1,0 +1,33 @@
+#include <stdlib.h>
+#include <time.h>
+#include<math.h>
+int main()
+{
+    int i, j, steps, walks;
+    float x, y, average;
+    srand(time(NULL));
+    printf("Enter number of walks: ");
+    scanf("%d", &walks);
+    printf("Enter number of steps: ");
+    scanf("%d", &steps);
+    average = 0;
+    for(i = 1; i <= walks; i++)
+    {
+        x = y = 0;
+        for(j = 1; j <= steps; j++)
+        {
+            int r = rand() % 2;
+            if(r == 0)
+                x -= 1;
+            else
+                x += 1; 
+        }
+        average += x;
+    }
+
+    average /= walks;
+   float a=average *average;
+   float b=sqrt(a);
+    printf("squareroot of square of final position: %f\n",b);
+    return 0;
+}
