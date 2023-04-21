@@ -9,7 +9,7 @@ int main()
     double x,y,z,anylpi=3.14159265;
     int N,n=0;
     printf("Analytical value of pi is 3.14159265");
-     printf("\nThe random no is = ");
+     printf("\nThe iteration no is = ");
  scanf("%d",&N);
  for(int i = 0; i < N; ++i) {
       z = x * x + y * y;
